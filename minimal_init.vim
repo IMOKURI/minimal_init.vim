@@ -1,44 +1,26 @@
-set packpath=./
-set runtimepath=$VIMRUNTIME
+set runtimepath+=.
 
-packadd packer.nvim
+if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
+    silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+endif
+
+call plug#begin(stdpath('data') . '/plugged')
+
+" Plug 'nvim-lua/plenary.nvim'
+" Plug 'nvim-telescope/telescope.nvim'
+
+call plug#end()
+
+if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+    PlugInstall --sync
+endif
 
 lua << EOF
-local packer = require('packer')
-local use = packer.use
-
-local config = {
-    package_root = './pack'
-}
-
-packer.init(config)
-
-use {
-    'IMOKURI/express_line.nvim',
-    opt = true,
-    requires = {
-        {
-            'nvim-lua/plenary.nvim',
-            opt = true
-        }
-    }
-}
-
-use {
-    'IMOKURI/challenger-deep-theme-vim',
-}
-
-packer.compile('./plugin/packer_load.vim')
+    -- Lua specific setup here.
 
 EOF
 
-command! PackerSync lua require('packer').sync()
-
-packadd plenary.nvim
-packadd express_line.nvim
-lua require('el').setup{}
-
-filetype plugin indent on
-syntax enable
-
-colorscheme challenger_deep
+" Following mappings are for me.
+nnoremap <silent> <Space>q <Cmd>qall<CR>
+nnoremap <silent> <Space>Q <Cmd>qall!<CR>
